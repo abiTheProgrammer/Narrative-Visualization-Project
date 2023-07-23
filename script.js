@@ -1,10 +1,9 @@
-// Load data and start the narrative visualization
 d3.csv("playlist.csv").then(data => {
     let sceneIndex = 0; // Initialize the scene index
     const scenes = [
       { title: "Scene 1: Overview", description: "An overview of the top songs in the playlist." },
-      { title: "Scene 2: Top-streamed songs", description: "Highlight the top-streamed songs and their artists." },
-      { title: "Scene 3: Song/Artist Trend", description: "Visualize the trend of streams over time for a specific song or artist." },
+      { title: "Scene 2: Top-streamed songs", description: "Highlighting the top-streamed songs and their artists." },
+      { title: "Scene 3: Song/Artist Trend", description: "Visualizing the trend of streams over time for a specific song or artist." },
       { title: "Scene 4: Conclusion", description: "Concluding remarks." }
     ];
     const svg = d3.select(".chart");
@@ -14,35 +13,38 @@ d3.csv("playlist.csv").then(data => {
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
   
+    // Create the table for the top songs' overview
+    const table = d3.select(".chart")
+      .append("table")
+      .attr("class", "overview-table");
+  
+    // Function to create the table rows for the top songs
+    const updateOverviewTable = (data) => {
+      const rows = table.selectAll("tr")
+        .data(data)
+        .enter()
+        .append("tr");
+  
+      // Add cells for song name
+      rows.append("td").text(d => d["song"]);
+    };
+  
     // Define functions to create scenes
     const createScene1 = () => {
-        d3.csv("playlist.csv").then(data => {
-            // Filter rows where the "Position" is equal to 1
-            const filteredData = data.filter(item => parseInt(item.Position) === 1);
-            
-            // Group the filtered data by song name and calculate the count of #1 positions
-            const groupedData = Array.from(d3.group(filteredData, d => d["Track Name"]), ([song, entries]) => ({
-                song,
-                count: entries.length,
-            }));
-            
-            // Sort the grouped data based on the count of #1 positions in descending order
-            const topSongs = groupedData.sort((a, b) => b.count - a.count);
-
-            // Create a table to show the top songs' overview
-            const table = d3.select(".chart")
-            .append("table")
-            .attr("class", "overview-table");
-
-            // Create table rows for each top song
-            const rows = table.selectAll("tr")
-            .data(topSongs)
-            .enter()
-            .append("tr");
-
-            // Add cells for song name
-            rows.append("td").text(d => d["track_name"]);
-        });      
+      // Filter rows where the "Position" is equal to 1
+      const filteredData = data.filter(item => parseInt(item.Position) === 1);
+  
+      // Group the filtered data by song name and calculate the count of #1 positions
+      const groupedData = Array.from(d3.group(filteredData, d => d["Track Name"]), ([song, entries]) => ({
+        song,
+        count: entries.length,
+      }));
+  
+      // Sort the grouped data based on the count of #1 positions in descending order
+      const topSongs = groupedData.sort((a, b) => b.count - a.count);
+  
+      // Update the table with the top songs' overview
+      updateOverviewTable(topSongs);
     };
   
     const createScene2 = () => {
@@ -59,32 +61,6 @@ d3.csv("playlist.csv").then(data => {
   
     // Initialize the narrative visualization with the first scene
     createScene1();
-    d3.select(".chart").append("text")
-        .attr("x", width / 2)
-        .attr("y", margin.top / 2)
-        .text(scenes[sceneIndex].title)
-        .style("font-size", "24px");
-  
-      d3.select(".chart").append("text")
-        .attr("x", width / 2)
-        .attr("y", margin.top / 2 + 30)
-        .text(scenes[sceneIndex].description)
-        .style("font-size", "16px");
-  
-    // Add event listeners for navigation buttons
-    d3.select("#prevBtn").on("click", () => {
-      if (sceneIndex > 0) {
-        sceneIndex--;
-        updateScene();
-      }
-    });
-  
-    d3.select("#nextBtn").on("click", () => {
-      if (sceneIndex < scenes.length - 1) {
-        sceneIndex++;
-        updateScene();
-      }
-    });
   
     // Function to update the scene based on the current scene index
     const updateScene = () => {
@@ -122,5 +98,33 @@ d3.csv("playlist.csv").then(data => {
           break;
       }
     };
+  
+    d3.select(".chart").append("text")
+      .attr("x", width / 2)
+      .attr("y", margin.top / 2)
+      .text(scenes[sceneIndex].title)
+      .style("font-size", "24px");
+  
+    d3.select(".chart").append("text")
+      .attr("x", width / 2)
+      .attr("y", margin.top / 2 + 30)
+      .text(scenes[sceneIndex].description)
+      .style("font-size", "16px");
+  
+    // Add event listeners for navigation buttons
+    d3.select("#prevBtn").on("click", () => {
+      if (sceneIndex > 0) {
+        sceneIndex--;
+        updateScene();
+      }
+    });
+  
+    d3.select("#nextBtn").on("click", () => {
+      if (sceneIndex < scenes.length - 1) {
+        sceneIndex++;
+        updateScene();
+      }
+    });
+  
   });
   
