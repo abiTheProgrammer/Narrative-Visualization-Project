@@ -60,10 +60,16 @@ d3.csv("playlist.csv").then(data => {
     // Initialize the narrative visualization with the first scene
     createScene1();
     d3.select(".chart").append("text")
-    .attr("x", width / 2)
-    .attr("y", margin.top / 2)
-    .text("Top Songs Overview")
-    .style("font-size", "24px");
+        .attr("x", width / 2)
+        .attr("y", margin.top / 2)
+        .text(scenes[sceneIndex].title)
+        .style("font-size", "24px");
+  
+      d3.select(".chart").append("text")
+        .attr("x", width / 2)
+        .attr("y", margin.top / 2 + 30)
+        .text(scenes[sceneIndex].description)
+        .style("font-size", "16px");
   
     // Add event listeners for navigation buttons
     d3.select("#prevBtn").on("click", () => {
