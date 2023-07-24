@@ -9,7 +9,7 @@ function scene1() {
 
     // Append a paragraph to the selected div and set text and CSS class
     div.append("p")
-    .text("Overview of songs that have appeared most frequently on the Spotify Top 50 Playlist.")
+    .html("Overview of songs that have appeared most frequently on the <b>Spotify Top 50 Playlist</b>.")
     .attr("class", "paragraph");
 
     // Load the data from the CSV file
@@ -34,7 +34,7 @@ function scene1() {
         const headerRow = table.append("tr");
         headerRow.append("th").text("Songs");
         headerRow.append("th").text("Artists");
-        headerRow.append("th").text("Number of times appeared");
+        headerRow.append("th").text("Frequency");
 
         // Create table rows for each top song
         const rows = table.selectAll("tr")
