@@ -1,130 +1,130 @@
-d3.csv("playlist.csv").then(data => {
-    let sceneIndex = 0; // Initialize the scene index
-    const scenes = [
-      { title: "Scene 1: Overview", description: "An overview of the top songs in the playlist." },
-      { title: "Scene 2: Top-streamed songs", description: "Highlighting the top-streamed songs and their artists." },
-      { title: "Scene 3: Song/Artist Trend", description: "Visualizing the trend of streams over time for a specific song or artist." },
-      { title: "Scene 4: Conclusion", description: "Concluding remarks." }
-    ];
-    const svg = d3.select(".chart");
-    const width = +svg.attr("width");
-    const height = +svg.attr("height");
-    const margin = { top: 50, right: 50, bottom: 50, left: 50 };
-    const innerWidth = width - margin.left - margin.right;
-    const innerHeight = height - margin.top - margin.bottom;
+// d3.csv("playlist.csv").then(data => {
+//     let sceneIndex = 0; // Initialize the scene index
+//     const scenes = [
+//       { title: "Scene 1: Overview", description: "An overview of the top songs in the playlist." },
+//       { title: "Scene 2: Top-streamed songs", description: "Highlighting the top-streamed songs and their artists." },
+//       { title: "Scene 3: Song/Artist Trend", description: "Visualizing the trend of streams over time for a specific song or artist." },
+//       { title: "Scene 4: Conclusion", description: "Concluding remarks." }
+//     ];
+//     const svg = d3.select(".chart");
+//     const width = +svg.attr("width");
+//     const height = +svg.attr("height");
+//     const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+//     const innerWidth = width - margin.left - margin.right;
+//     const innerHeight = height - margin.top - margin.bottom;
   
-    // Create the table for the top songs' overview
-    const table = d3.select(".chart")
-      .append("table")
-      .attr("class", "overview-table");
+//     // Create the table for the top songs' overview
+//     const table = d3.select(".chart")
+//       .append("table")
+//       .attr("class", "overview-table");
   
-    // Function to create the table rows for the top songs
-    const updateOverviewTable = (data) => {
-      const rows = table.selectAll("tr")
-        .data(data)
-        .enter()
-        .append("tr");
+//     // Function to create the table rows for the top songs
+//     const updateOverviewTable = (data) => {
+//       const rows = table.selectAll("tr")
+//         .data(data)
+//         .enter()
+//         .append("tr");
   
-      // Add cells for song name
-      rows.append("td").text(d => d["song"]);
-    };
+//       // Add cells for song name
+//       rows.append("td").text(d => d["track_name"]);
+//     };
   
-    // Define functions to create scenes
-    const createScene1 = () => {
-      // Filter rows where the "Position" is equal to 1
-      const filteredData = data.filter(item => parseInt(item.Position) === 1);
+//     // Define functions to create scenes
+//     const createScene1 = () => {
+//       // Filter rows where the "Position" is equal to 1
+//       const filteredData = data.filter(item => parseInt(item.position_in_playlist) === 1);
   
-      // Group the filtered data by song name and calculate the count of #1 positions
-      const groupedData = Array.from(d3.group(filteredData, d => d["Track Name"]), ([song, entries]) => ({
-        song,
-        count: entries.length,
-      }));
+//       // Group the filtered data by song name and calculate the count of #1 positions
+//       const groupedData = Array.from(d3.group(filteredData, d => d["track_name"]), ([song, entries]) => ({
+//         song,
+//         count: entries.length,
+//       }));
   
-      // Sort the grouped data based on the count of #1 positions in descending order
-      const topSongs = groupedData.sort((a, b) => b.count - a.count);
+//       // Sort the grouped data based on the count of #1 positions in descending order
+//       const topSongs = groupedData.sort((a, b) => b.count - a.count);
   
-      // Update the table with the top songs' overview
-      updateOverviewTable(topSongs);
-    };
+//       // Update the table with the top songs' overview
+//       updateOverviewTable(topSongs);
+//     };
   
-    const createScene2 = () => {
-      // Implement code for Scene 2 here
-    };
+//     const createScene2 = () => {
+//       // Implement code for Scene 2 here
+//     };
   
-    const createScene3 = () => {
-      // Implement code for Scene 3 here
-    };
+//     const createScene3 = () => {
+//       // Implement code for Scene 3 here
+//     };
   
-    const createScene4 = () => {
-      // Implement code for Scene 4 here
-    };
+//     const createScene4 = () => {
+//       // Implement code for Scene 4 here
+//     };
   
-    // Initialize the narrative visualization with the first scene
-    createScene1();
+//     // Initialize the narrative visualization with the first scene
+//     createScene1();
   
-    // Function to update the scene based on the current scene index
-    const updateScene = () => {
-      svg.selectAll("*").remove(); // Clear the existing content
+//     // Function to update the scene based on the current scene index
+//     const updateScene = () => {
+//       svg.selectAll("*").remove(); // Clear the existing content
   
-      // Update scene title and description
-      const currentScene = scenes[sceneIndex];
-      d3.select(".chart").append("text")
-        .attr("x", width / 2)
-        .attr("y", margin.top / 2)
-        .text(currentScene.title)
-        .style("font-size", "24px");
+//       // Update scene title and description
+//       const currentScene = scenes[sceneIndex];
+//       d3.select(".chart").append("text")
+//         .attr("x", width / 2)
+//         .attr("y", margin.top / 2)
+//         .text(currentScene.title)
+//         .style("font-size", "24px");
   
-      d3.select(".chart").append("text")
-        .attr("x", width / 2)
-        .attr("y", margin.top / 2 + 30)
-        .text(currentScene.description)
-        .style("font-size", "16px");
+//       d3.select(".chart").append("text")
+//         .attr("x", width / 2)
+//         .attr("y", margin.top / 2 + 30)
+//         .text(currentScene.description)
+//         .style("font-size", "16px");
   
-      // Call the appropriate scene function based on the scene index
-      switch (sceneIndex) {
-        case 0:
-          createScene1();
-          break;
-        case 1:
-          createScene2();
-          break;
-        case 2:
-          createScene3();
-          break;
-        case 3:
-          createScene4();
-          break;
-        default:
-          break;
-      }
-    };
+//       // Call the appropriate scene function based on the scene index
+//       switch (sceneIndex) {
+//         case 0:
+//           createScene1();
+//           break;
+//         case 1:
+//           createScene2();
+//           break;
+//         case 2:
+//           createScene3();
+//           break;
+//         case 3:
+//           createScene4();
+//           break;
+//         default:
+//           break;
+//       }
+//     };
   
-    d3.select(".chart").append("text")
-      .attr("x", width / 2)
-      .attr("y", margin.top / 2)
-      .text(scenes[sceneIndex].title)
-      .style("font-size", "24px");
+//     d3.select(".chart").append("text")
+//       .attr("x", width / 2)
+//       .attr("y", margin.top / 2)
+//       .text(scenes[sceneIndex].title)
+//       .style("font-size", "24px");
   
-    d3.select(".chart").append("text")
-      .attr("x", width / 2)
-      .attr("y", margin.top / 2 + 30)
-      .text(scenes[sceneIndex].description)
-      .style("font-size", "16px");
+//     d3.select(".chart").append("text")
+//       .attr("x", width / 2)
+//       .attr("y", margin.top / 2 + 30)
+//       .text(scenes[sceneIndex].description)
+//       .style("font-size", "16px");
   
-    // Add event listeners for navigation buttons
-    d3.select("#prevBtn").on("click", () => {
-      if (sceneIndex > 0) {
-        sceneIndex--;
-        updateScene();
-      }
-    });
+//     // Add event listeners for navigation buttons
+//     d3.select("#prevBtn").on("click", () => {
+//       if (sceneIndex > 0) {
+//         sceneIndex--;
+//         updateScene();
+//       }
+//     });
   
-    d3.select("#nextBtn").on("click", () => {
-      if (sceneIndex < scenes.length - 1) {
-        sceneIndex++;
-        updateScene();
-      }
-    });
+//     d3.select("#nextBtn").on("click", () => {
+//       if (sceneIndex < scenes.length - 1) {
+//         sceneIndex++;
+//         updateScene();
+//       }
+//     });
   
-  });
+//   });
   
