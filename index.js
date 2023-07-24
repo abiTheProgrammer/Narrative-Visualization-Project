@@ -37,6 +37,10 @@ d3.csv("playlist.csv").then(data => {
         const groupedData = Array.from(d3.group(filteredData, d => d.track_name), ([track_name, entries]) => ({
             track_name,
             artists: entries[0].name_of_artists,
+            album: entries[0].album_name,
+            album_release_date: entries[0].album_release_date,
+            tracks: entries[0].number_of_tracks_in_album,
+            duration: entries[0].track_duration_ms,
             count: entries.length
         }));
 
@@ -49,7 +53,6 @@ d3.csv("playlist.csv").then(data => {
         // Create table header row
         const headerRow = table.append("tr");
         headerRow.append("th").text("Songs");
-        headerRow.append("th").text("Artists");
         headerRow.append("th").text("Times Appeared");
 
         // Create table rows for each top song
@@ -58,9 +61,17 @@ d3.csv("playlist.csv").then(data => {
         .enter()
         .append("tr");
 
-        // Add cells for track name, artists, and number of times appeared
-        rows.append("td").text(d => d.track_name);
-        rows.append("td").text(d => d.artists.replace(/[\[\]']/g, "").replace(/,/g, ", "));
+        // Add cells for track name, number of times appeared, and tooltip
+        rows.append("td")
+            .text(d => d.track_name)
+            .attr("data-tooltip", d => 
+                `Duration: ${Math.floor(parseInt(d.duration) / 60000)} mins, ${((parseInt(d.duration) % 60000) / 1000).toFixed(0)} secs
+                Artists: ${d.artists.replace(/[\[\]']/g, "").replace(/,/g, ", ")}
+                Album: ${d.album}
+                Album Release Date: ${d.album_release_date}
+                No. of tracks in album: ${d.tracks}
+                `
+            );
         rows.append("td").text(d => d.count);
     };
 
@@ -73,14 +84,22 @@ d3.csv("playlist.csv").then(data => {
 
        // Append a paragraph to the selected div and set text and CSS class
        div.append("p")
-       .html("Highlighting the top-streamed songs and their artists based on their <b>Average Track Popularity Score.</b>")
+       .html("Highlighting the top-streamed songs based on their <b>Average Track Popularity Score.</b>")
        .attr("class", "paragraph");
 
         // Group the data by track_name and calculate the average track_popularity for each song
         const groupedData = Array.from(d3.group(data, d => d.track_name), ([track_name, entries]) => {
             const sumTrackPopularity = d3.sum(entries, d => d.track_popularity);
             const averageTrackPopularity = parseInt(sumTrackPopularity / entries.length);
-            return { track_name, artists: entries[0].name_of_artists, average_popularity: averageTrackPopularity };
+            return { 
+                track_name,
+                artists: entries[0].name_of_artists,
+                album: entries[0].album_name,
+                album_release_date: entries[0].album_release_date,
+                tracks: entries[0].number_of_tracks_in_album,
+                duration: entries[0].track_duration_ms,
+                average_popularity: averageTrackPopularity 
+            };
         });
         
         // Sort the grouped data in descending order based on average_popularity >= 1
@@ -93,7 +112,6 @@ d3.csv("playlist.csv").then(data => {
         // Create table header row
         const headerRow = table.append("tr");
         headerRow.append("th").text("Songs");
-        headerRow.append("th").text("Artists");
         headerRow.append("th").text("Average Track Popularity Score");
 
         // Create table rows for each top song
@@ -102,9 +120,17 @@ d3.csv("playlist.csv").then(data => {
         .enter()
         .append("tr");
 
-        // Add cells for track name, artists, and count of #1 positions
-        rows.append("td").text(d => d.track_name);
-        rows.append("td").text(d => d.artists.replace(/[\[\]']/g, "").replace(/,/g, ", "));
+        // Add cells for track name, average track popularity, and tooltip
+        rows.append("td")
+            .text(d => d.track_name)
+            .attr("data-tooltip", d => 
+                `Duration: ${Math.floor(parseInt(d.duration) / 60000)} mins, ${((parseInt(d.duration) % 60000) / 1000).toFixed(0)} secs
+                Artists: ${d.artists.replace(/[\[\]']/g, "").replace(/,/g, ", ")}
+                Album: ${d.album}
+                Album Release Date: ${d.album_release_date}
+                No. of tracks in album: ${d.tracks}
+                `
+            );
         rows.append("td").text(d => d.average_popularity);
     };
     
