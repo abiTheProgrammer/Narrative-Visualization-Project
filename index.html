@@ -2,15 +2,35 @@
 <html>
 <head>
   <title>Interactive Slideshow - Narrative Visualization</title>
-  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="scene"></div>
+  <div class="scene"></div> 
     <div class="navigation">
       <button class="prevBtn">Previous</button>
       <button class="nextBtn">Next</button>
     </div>
+    <div class="chart-container">
+      <div class="dropdown-container-song">
+        <!-- Dropdown for selecting the song -->
+        <label for="song-dropdown">Song:</label>
+        <select id="song-dropdown">
+          <!-- Add options for the song dropdown here -->
+        </select>
+      </div>
+      <div class="dropdown-container-trend">
+        <!-- Dropdown for selecting the y-axis data -->
+        <label for="y-axis-dropdown">Visualize trend on its:</label>
+        <select id="y-axis-dropdown">
+          <option value="position">Playlist Positions</option>
+          <option value="popularity">Track Popularity</option>
+        </select>
+      </div>
+      
+      <!-- SVG container for the line chart -->
+      <svg class="line-chart" width="600" height="400"></svg>
+    </div>
   <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script src="index.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

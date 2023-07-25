@@ -1,34 +1,121 @@
-.container {
-    text-align: center;
-    margin: 50px auto;
+/* CSS styling to center align the div and its contents */
+.scene {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
   
-  .chart {
-    width: 1000px;
-    height: 600px;
-    border: 1px solid #ccc;
-  }
-  
-  .navigation {
+  /* CSS styling for the table */
+  table {
+    border-collapse: collapse;
+    width: 80%;
     margin-top: 20px;
   }
   
-  button {
-    padding: 8px 16px;
-    margin: 0 5px;
-  }
-  
-  .overview-table {
-    width: 100%;
-    border-collapse: collapse;
+  th, td {
+    border: 1px solid #dddddd;
     text-align: left;
-  }
-  
-  .overview-table th, .overview-table td {
     padding: 8px;
-    border-bottom: 1px solid #ccc;
   }
   
-  .overview-table th {
+  th {
     background-color: #f2f2f2;
   }
+
+  /* CSS styling for the tooltip */
+  td[data-tooltip] {
+    position: relative;
+  }
+
+  td[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: -40px; /* Adjust this value to control the tooltip's position */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    white-space: pre-line;
+    pointer-events: none; /* This ensures the tooltip doesn't interfere with mouse events */
+    opacity: 0; /* Initially hide the tooltip */
+    z-index: 1; /* Make sure the tooltip is above other elements */
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+    background-image: linear-gradient(45deg, #333 0%, #444 100%); /* Gradient background */
+    transition: opacity 0.2s ease-in-out; /* Add a smooth fade-in/fade-out effect */
+  }
+
+  td[data-tooltip]:hover::after {
+    opacity: 1; /* Show the tooltip on hover */
+  }
+
+  .navigation {
+      margin-top: 0px;
+    }
+
+    .prevBtn {
+      position: fixed;
+      top: 40px;
+      left: 30px;
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 0 5px;
+      cursor: pointer
+    }
+
+    .nextBtn {
+      position: fixed;
+      top: 40px;
+      right: 40px;
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 0 5px;
+      cursor: pointer
+    }
+
+  /* Add styling for the chart container and dropdowns */
+  .chart-container {
+    display: flex;
+    align-items: flex-start; /* Align items to the left */
+    margin-top: 20px; /* Add some space between the chart and the dropdowns */
+    width: 1380px; /* Adjust the width as needed */
+    height: 550px;
+    border: 1px solid #ddd; /* Add a border for the chart container */
+    padding: 20px; /* Add some padding to the chart container */
+    border-radius: 5px; /* Add rounded corners to the chart container */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+  }
+
+    /* Styling for the dropdown containers */
+    .dropdown-container-song,
+    .dropdown-container-trend {
+      display: block;
+      margin-bottom: 10px; /* Add some spacing between the two dropdowns */
+    }
+
+      /* Styling for labels and dropdowns */
+      label {
+        display: inline-block;
+        margin-bottom: 5px; /* Add spacing between the label and the dropdown */
+        font-weight: bold; /* Make the labels bold */
+        font-size: 16px; /* Increase the font size for the labels */
+        color: #333; /* Set label text color */
+      }
+
+      select {
+        width: 200px; /* Set the width of the dropdown */
+        padding: 8px; /* Add some padding to the dropdown */
+        font-size: 14px; /* Set the font size for the dropdown */
+        border: 1px solid #ddd; /* Add a border to the dropdown */
+        border-radius: 5px; /* Add rounded corners to the dropdown */
+        background-color: #f7f7f7; /* Set the background color for the dropdown */
+        color: #333; /* Set dropdown text color */
+        cursor: pointer; /* Change cursor to pointer on hover */
+      }
+
+      select:focus {
+        outline: none; /* Remove focus outline on select elements */
+      }
