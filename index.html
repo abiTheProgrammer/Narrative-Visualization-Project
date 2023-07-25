@@ -10,13 +10,11 @@
       <button class="prevBtn">Previous</button>
       <button class="nextBtn">Next</button>
     </div>
-    <div class="chart-container">
+    <div class="dropdown-container">
       <div class="dropdown-container-song">
         <!-- Dropdown for selecting the song -->
         <label for="song-dropdown">Song:</label>
-        <select id="song-dropdown">
-          <!-- Add options for the song dropdown here -->
-        </select>
+        <select id="song-dropdown"></select>
       </div>
       <div class="dropdown-container-trend">
         <!-- Dropdown for selecting the y-axis data -->
@@ -26,9 +24,10 @@
           <option value="popularity">Track Popularity</option>
         </select>
       </div>
-      
-      <!-- SVG container for the line chart -->
-      <svg class="line-chart" width="600" height="400"></svg>
+      <svg class="line-chart" width="600" height="400">
+        <g class="x-axis"></g>
+        <g class="y-axis"></g>
+      </svg>
     </div>
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script src="script.js"></script>

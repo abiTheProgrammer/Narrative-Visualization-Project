@@ -30,7 +30,7 @@ d3.csv("playlist.csv").then(data => {
         .html("Overview of songs that have appeared most frequently on the <b>Spotify Top 50 Playlist</b>.")
         .attr("class", "paragraph");
 
-        d3.select(".chart-container").style("display", "none");
+        d3.select(".dropdown-container").style("display", "none");
 
         // Sort the data based on "position_in_playlist" in ascending order
         const filteredData = data.sort((a, b) => a.position_in_playlist - b.position_in_playlist);
@@ -94,7 +94,7 @@ d3.csv("playlist.csv").then(data => {
        .html("Highlighting the top-streamed songs based on their <b>Average Track Popularity Score.</b>")
        .attr("class", "paragraph");
 
-       d3.select(".chart-container").style("display", "none");
+       d3.select(".dropdown-container").style("display", "none");
 
         // Group the data by track_name and calculate the average track_popularity for each song
         const groupedData = Array.from(d3.group(data, d => d.track_name), ([track_name, entries]) => {
@@ -160,7 +160,102 @@ d3.csv("playlist.csv").then(data => {
         .html("Visualizing song trends over time based on their <b>Track Popularity and Playlist Positions.</b>")
         .attr("class", "paragraph");
 
-        d3.select(".chart-container").style("display", "block");
+        d3.select(".dropdown-container").style("display", "block");
+
+        // Get the unique song names from the data array
+        const uniqueSongs = Array.from(new Set(data.map(d => d.track_name)));
+
+        // Select the song dropdown
+        const songDropdown = d3.select("#song-dropdown");
+
+        // Add options to the song dropdown
+        songDropdown.selectAll("option")
+            .data(uniqueSongs)
+            .enter()
+            .append("option")
+            .attr("value", d => d) // Set the value of the option to the song name
+            .text(d => d); // Set the displayed text for the option to the song name
+
+        d3.select("svg").remove();
+        function createLineChart(data, selectedTrackName, selectedYAxis) {
+            // Filter data for the selected track name
+            const filteredData = data.filter(d => d.track_name === selectedTrackName);
+            
+            // Sort data based on the track_add_date in ascending order
+            filteredData.sort((a, b) => new Date(a.track_add_date) - new Date(b.track_add_date));
+            
+            // Get the minimum and maximum dates for the x-axis domain
+            const minDate = new Date(filteredData[0].track_add_date);
+            const maxDate = new Date(); // Assuming today's date is the maximum date
+
+            // Edit from here
+            const svg = d3
+                .select(".dropdown-container") // Select the drop-down container instead of the .line-chart class
+                .append("svg") // Append the SVG to the drop-down container
+                .attr("width", 600)
+                .attr("height", 400);
+            const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+            const width = 600 - margin.left - margin.right;
+            const height = 400 - margin.top - margin.bottom;
+            
+            if (selectedYAxis === "position") {
+                const highest_pos = d3.min(filteredData, d => d.position_in_playlist);
+            } else {
+                const highest_pop = d3.max(filteredData, d => d.track_popularity);
+            }
+            
+            // Set up the x and y scales
+            const xScale = d3.scaleTime()
+                .domain([minDate, maxDate])
+                .range([0, width]);
+
+            const yScale = d3.scaleLinear()
+                .domain([51, 0])
+                .range([height, 0]);
+
+            // Generate 10 evenly spaced tick values for the x-axis
+            const tickValues = xScale.ticks(3);
+
+            // Create the x-axis with the customized tick values
+            const xAxis = d3.axisBottom(xScale)
+                .tickValues(tickValues)
+                .tickFormat(d3.timeFormat("%b %Y")); // Customize the tick label format if needed
+
+            const yAxis = d3.axisLeft(yScale);
+
+            // Add the axes to the chart
+            svg
+                .append("g")
+                .attr("class", "x-axis")
+                .attr("transform", `translate(${margin.left}, ${height + margin.top})`)
+                .call(xAxis);
+
+            svg
+                .append("g")
+                .attr("class", "y-axis")
+                .attr("transform", `translate(${margin.left}, ${margin.top})`)
+                .call(yAxis);
+
+            // Create the line generator for the line chart
+            const line = d3.line()
+                .x(d => xScale(new Date(d.track_add_date)) + margin.left)
+                .y(d => yScale((selectedYAxis === "position") ? d.position_in_playlist : d.track_popularity) + margin.top);
+
+            // Remove any existing line path before adding the new one
+            svg.select(".line-path").remove();
+
+            // Add the line path to the chart
+            svg.append("path")
+                .datum(filteredData)
+                .attr("class", "line-path")
+                .attr("d", line)
+                .attr("fill", "none")
+                .attr("stroke", "steelblue")
+                .attr("stroke-width", 2);
+        }
+            
+        createLineChart(data, data[0].track_name, "position");
+              
     };
     
     // Initialize the narrative visualization with the first scene

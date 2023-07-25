@@ -77,7 +77,7 @@
     }
 
   /* Add styling for the chart container and dropdowns */
-  .chart-container {
+  .dropdown-container {
     display: flex;
     align-items: flex-start; /* Align items to the left */
     margin-top: 20px; /* Add some space between the chart and the dropdowns */
