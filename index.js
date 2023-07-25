@@ -41,6 +41,7 @@ d3.csv("playlist.csv").then(data => {
             album_release_date: entries[0].album_release_date,
             tracks: entries[0].number_of_tracks_in_album,
             duration: entries[0].track_duration_ms,
+            position: entries[0].position_in_playlist,
             count: entries.length
         }));
 
@@ -72,7 +73,11 @@ d3.csv("playlist.csv").then(data => {
                 No. of tracks in album: ${d.tracks}
                 `
             );
-        rows.append("td").text(d => d.count);
+        rows.append("td")
+            .text(d => d.count)
+            .attr("data-tooltip", d => 
+                `Highest position on playlist: ${d.position}`
+            );
     };
 
     const createScene2 = () => {
@@ -98,6 +103,7 @@ d3.csv("playlist.csv").then(data => {
                 album_release_date: entries[0].album_release_date,
                 tracks: entries[0].number_of_tracks_in_album,
                 duration: entries[0].track_duration_ms,
+                position: entries[0].position_in_playlist,
                 average_popularity: averageTrackPopularity 
             };
         });
@@ -131,7 +137,11 @@ d3.csv("playlist.csv").then(data => {
                 No. of tracks in album: ${d.tracks}
                 `
             );
-        rows.append("td").text(d => d.average_popularity);
+        rows.append("td")
+            .text(d => d.average_popularity)
+            .attr("data-tooltip", d => 
+                `Highest position on playlist: ${d.position}`
+            );
     };
     
     const createScene3 = () => {
