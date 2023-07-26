@@ -87,6 +87,7 @@
     padding: 20px; /* Add some padding to the chart container */
     border-radius: 5px; /* Add rounded corners to the chart container */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+    overflow: hidden;
   }
 
     /* Styling for the dropdown containers */
@@ -119,3 +120,7 @@
       select:focus {
         outline: none; /* Remove focus outline on select elements */
       }
+    #text-container {
+      border: 1px solid black; /* Add a 1px solid black border to the SVG container */
+      transform: translateY(-400px);
+    }

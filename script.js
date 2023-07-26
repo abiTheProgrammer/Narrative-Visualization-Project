@@ -33,7 +33,7 @@ d3.csv("playlist.csv").then(data => {
 
         // Append a paragraph to the selected div and set text and CSS class
         div.append("p")
-        .html("Overview of songs that have appeared most frequently on the <b>Spotify Top 50 Playlist</b>.")
+        .html("Overview of songs that have appeared most frequently on the <b>Spotify Top 50 Playlist (March 2023 - July 2023).</b> Hover over cells for more information.")
         .attr("class", "paragraph");
 
         d3.select(".scene3-container").style("display", "none");
@@ -163,7 +163,7 @@ d3.csv("playlist.csv").then(data => {
 
         // Append a paragraph to the selected div and set text and CSS class
         div.append("p")
-        .html("Visualizing song trends over time based on their <b>Track Popularity and Playlist Positions.</b>")
+        .html("Visualizing song trends over time based on their <b>Track Popularity and Playlist Positions.</b> Hover over different points on the line for more information.")
         .attr("class", "paragraph");
 
         d3.select(".scene3-container").style("display", "block");
@@ -368,7 +368,8 @@ d3.csv("playlist.csv").then(data => {
                 .attr("x", width / 2 + margin.left) // Center the title under the x-axis
                 .attr("y", height + margin.top + 35) // Position the title below the x-axis
                 .style("text-anchor", "middle") // Align the text to the center
-                .text("Date added to playlist - Date removed from playlist");
+                .text("Date added to playlist - Date removed from playlist")
+                .style("font-weight", "bold");
 
             // Add the y-axis title
             svg.append("text")
@@ -377,7 +378,8 @@ d3.csv("playlist.csv").then(data => {
                 .attr("y", margin.left - 35) // Adjust the y-coordinate to control the distance from the y-axis
                 .attr("transform", "rotate(-90)") // Rotate the text to display it vertically
                 .style("text-anchor", "middle") // Align the text to the center
-                .text((selectedYAxis === "position") ? "Playlist Positions" : "Track Popularity");
+                .text((selectedYAxis === "position") ? "Playlist Positions" : "Track Popularity")
+                .style("font-weight", "bold");
 
         }
             
@@ -397,6 +399,8 @@ d3.csv("playlist.csv").then(data => {
         });
 
         createLineChart(data, data[0].track_name, "position");
+        d3.select("#song-dropdown").property("value", data[0].track_name);
+        d3.select("#y-axis-dropdown").property("value", "position");
               
     };
     
