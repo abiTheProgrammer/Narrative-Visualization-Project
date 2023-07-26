@@ -176,7 +176,12 @@ d3.csv("playlist.csv").then(data => {
             .attr("value", d => d) // Set the value of the option to the song name
             .text(d => d); // Set the displayed text for the option to the song name
 
-        d3.select("svg").remove();
+        const svg = d3
+            .select(".dropdown-container") // Select the drop-down container instead of the .line-chart class
+            .select("svg") // Append the SVG to the drop-down container
+            .attr("width", 600)
+            .attr("height", 400)
+
         function createLineChart(data, selectedTrackName, selectedYAxis) {
             // Filter data for the selected track name
             const filteredData = data.filter(d => d.track_name === selectedTrackName);
@@ -186,43 +191,45 @@ d3.csv("playlist.csv").then(data => {
             
             // Get the minimum and maximum dates for the x-axis domain
             const minDate = new Date(filteredData[0].track_add_date);
-            const maxDate = new Date(); // Assuming today's date is the maximum date
+            const maxDate = new Date(filteredData[filteredData.length - 1].track_add_date); // Latest date of the selected song
 
-            // Edit from here
-            const svg = d3
-                .select(".dropdown-container") // Select the drop-down container instead of the .line-chart class
-                .append("svg") // Append the SVG to the drop-down container
-                .attr("width", 600)
-                .attr("height", 400);
+            // Remove previous chart elements
+            svg.selectAll(".x-axis").remove();
+            svg.selectAll(".y-axis").remove();
+            svg.selectAll(".line-path").remove();
+            svg.selectAll(".x-axis-title").remove();
+            svg.selectAll(".y-axis-title").remove();           
+
             const margin = { top: 50, right: 50, bottom: 50, left: 50 };
             const width = 600 - margin.left - margin.right;
             const height = 400 - margin.top - margin.bottom;
-            
+
+            const xScale = d3.scaleTime()
+                    .domain([minDate, maxDate])
+                    .range([0, width]);
+
+            // Create the x-axis with the customized tick format
+            const xAxis = d3.axisBottom(xScale)
+                .tickValues([minDate, maxDate]) // Use only the start and end date as tick values
+                .tickFormat(d3.timeFormat("%b %Y"));
+
+            let yScale, yAxis;
             if (selectedYAxis === "position") {
                 const highest_pos = d3.min(filteredData, d => d.position_in_playlist);
+                yScale = d3.scaleLinear()
+                    .domain([50, 1])
+                    .range([height, 0]);
+                
+                yAxis = d3.axisLeft(yScale)
+                    .tickValues(d3.range(50, 0, -5).concat(1));
             } else {
                 const highest_pop = d3.max(filteredData, d => d.track_popularity);
+                yScale = d3.scaleLinear()
+                    .domain([0, 100])
+                    .range([height, 0]);
+                    yAxis = d3.axisLeft(yScale);
             }
             
-            // Set up the x and y scales
-            const xScale = d3.scaleTime()
-                .domain([minDate, maxDate])
-                .range([0, width]);
-
-            const yScale = d3.scaleLinear()
-                .domain([51, 0])
-                .range([height, 0]);
-
-            // Generate 10 evenly spaced tick values for the x-axis
-            const tickValues = xScale.ticks(3);
-
-            // Create the x-axis with the customized tick values
-            const xAxis = d3.axisBottom(xScale)
-                .tickValues(tickValues)
-                .tickFormat(d3.timeFormat("%b %Y")); // Customize the tick label format if needed
-
-            const yAxis = d3.axisLeft(yScale);
-
             // Add the axes to the chart
             svg
                 .append("g")
@@ -250,10 +257,43 @@ d3.csv("playlist.csv").then(data => {
                 .attr("class", "line-path")
                 .attr("d", line)
                 .attr("fill", "none")
-                .attr("stroke", "steelblue")
+                .attr("stroke", (selectedYAxis === "position") ? "steelblue" : "red")
                 .attr("stroke-width", 2);
+            
+            // Add the x-axis title
+            svg.append("text")
+                .attr("class", "x-axis-title")
+                .attr("x", width / 2 + margin.left) // Center the title under the x-axis
+                .attr("y", height + margin.top + 35) // Position the title below the x-axis
+                .style("text-anchor", "middle") // Align the text to the center
+                .text("Dates");
+
+            // Add the y-axis title
+            svg.append("text")
+                .attr("class", "y-axis-title")
+                .attr("x", -height / 2 - margin.top) // Position the title to the left of the y-axis
+                .attr("y", margin.left - 35) // Adjust the y-coordinate to control the distance from the y-axis
+                .attr("transform", "rotate(-90)") // Rotate the text to display it vertically
+                .style("text-anchor", "middle") // Align the text to the center
+                .text((selectedYAxis === "position") ? "Playlist Positions" : "Track Popularity");
+
         }
             
+
+        // Event listener for song dropdown
+        d3.select("#song-dropdown").on("change", function () {
+            const selectedSong = d3.select(this).property("value");
+            const selectedYAxis = d3.select("#y-axis-dropdown").property("value");
+            createLineChart(data, selectedSong, selectedYAxis);
+        });
+
+        // Event listener for y-axis dropdown
+        d3.select("#y-axis-dropdown").on("change", function () {
+            const selectedSong = d3.select("#song-dropdown").property("value");
+            const selectedYAxis = d3.select(this).property("value");
+            createLineChart(data, selectedSong, selectedYAxis);
+        });
+
         createLineChart(data, data[0].track_name, "position");
               
     };
