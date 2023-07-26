@@ -18,6 +18,12 @@ d3.csv("playlist.csv").then(data => {
         }
     };
 
+    const options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      };
+
     const createScene1 = () => {
         
         // Append an h1 heading to the selected div and set text and CSS class
@@ -30,7 +36,7 @@ d3.csv("playlist.csv").then(data => {
         .html("Overview of songs that have appeared most frequently on the <b>Spotify Top 50 Playlist</b>.")
         .attr("class", "paragraph");
 
-        d3.select(".dropdown-container").style("display", "none");
+        d3.select(".scene3-container").style("display", "none");
 
         // Sort the data based on "position_in_playlist" in ascending order
         const filteredData = data.sort((a, b) => a.position_in_playlist - b.position_in_playlist);
@@ -71,7 +77,7 @@ d3.csv("playlist.csv").then(data => {
                 `Duration: ${Math.floor(parseInt(d.duration) / 60000)} mins, ${((parseInt(d.duration) % 60000) / 1000).toFixed(0)} secs
                 Artists: ${d.artists.replace(/[\[\]']/g, "").replace(/,/g, ", ")}
                 Album: ${d.album}
-                Album Release Date: ${d.album_release_date}
+                Album Release Date: ${new Date(d.album_release_date).toLocaleDateString(undefined, options)}
                 No. of tracks in album: ${d.tracks}
                 `
             );
@@ -94,7 +100,7 @@ d3.csv("playlist.csv").then(data => {
        .html("Highlighting the top-streamed songs based on their <b>Average Track Popularity Score.</b>")
        .attr("class", "paragraph");
 
-       d3.select(".dropdown-container").style("display", "none");
+       d3.select(".scene3-container").style("display", "none");
 
         // Group the data by track_name and calculate the average track_popularity for each song
         const groupedData = Array.from(d3.group(data, d => d.track_name), ([track_name, entries]) => {
@@ -137,7 +143,7 @@ d3.csv("playlist.csv").then(data => {
                 `Duration: ${Math.floor(parseInt(d.duration) / 60000)} mins, ${((parseInt(d.duration) % 60000) / 1000).toFixed(0)} secs
                 Artists: ${d.artists.replace(/[\[\]']/g, "").replace(/,/g, ", ")}
                 Album: ${d.album}
-                Album Release Date: ${d.album_release_date}
+                Album Release Date: ${new Date(d.album_release_date).toLocaleDateString(undefined, options)}
                 No. of tracks in album: ${d.tracks}
                 `
             );
@@ -160,7 +166,7 @@ d3.csv("playlist.csv").then(data => {
         .html("Visualizing song trends over time based on their <b>Track Popularity and Playlist Positions.</b>")
         .attr("class", "paragraph");
 
-        d3.select(".dropdown-container").style("display", "block");
+        d3.select(".scene3-container").style("display", "block");
 
         // Get the unique song names from the data array
         const uniqueSongs = Array.from(new Set(data.map(d => d.track_name)));
@@ -177,7 +183,7 @@ d3.csv("playlist.csv").then(data => {
             .text(d => d); // Set the displayed text for the option to the song name
 
         const svg = d3
-            .select(".dropdown-container") // Select the drop-down container instead of the .line-chart class
+            .select(".scene3-container") // Select the drop-down container instead of the .line-chart class
             .select("svg") // Append the SVG to the drop-down container
             .attr("width", 600)
             .attr("height", 400)
@@ -198,11 +204,107 @@ d3.csv("playlist.csv").then(data => {
             svg.selectAll(".y-axis").remove();
             svg.selectAll(".line-path").remove();
             svg.selectAll(".x-axis-title").remove();
-            svg.selectAll(".y-axis-title").remove();           
+            svg.selectAll(".y-axis-title").remove();
+            svg.selectAll(".no-data-text").remove();
+                   
 
             const margin = { top: 50, right: 50, bottom: 50, left: 50 };
             const width = 600 - margin.left - margin.right;
             const height = 400 - margin.top - margin.bottom;
+            
+            if (minDate.getTime() === maxDate.getTime()) {
+                const formattedDate = minDate.toLocaleDateString(undefined, options);
+                const trackName = selectedTrackName;
+                const playlistText = "Spotify Top 50 Playlist";
+                const onceText = "once";
+                const positionText = "Position:";
+                const popularityText = "Track Popularity:";
+
+                const textElement = svg
+                    .append("text")
+                    .attr("class", "no-data-text")
+                    .attr("x", width / 2)
+                    .attr("y", height / 2)
+                    .attr("text-anchor", "middle")
+                    .attr("font-size", "20")
+                    .attr("fill", "black");
+
+                if (trackName.length > 50) {
+                    const midPoint = Math.floor(trackName.length / 2);
+
+                    // Split the song name into two parts at the mid-point
+                    const [songNameLine1, songNameLine2] = [
+                        trackName.substring(0, midPoint),
+                        trackName.substring(midPoint)
+                    ];
+                    // Append the song name with line breaks
+                    textElement
+                        .append("tspan")
+                        .attr("x", width / 2)
+                        .attr("dy", "-0.6em") // Adjust the line spacing for the first line
+                        .text(songNameLine1)
+                        .style("font-weight", "bold")
+                        .style("fill", "fuchsia")
+                        .style("text-shadow", "1px 1px 2px rgba(0, 0, 0, 0.5)");
+
+                    if (songNameLine2) {
+                        textElement
+                            .append("tspan")
+                            .attr("x", width / 2)
+                            .attr("dy", "1.2em") // Adjust the line spacing for the second line
+                            .text(songNameLine2)
+                            .style("font-weight", "bold")
+                            .style("fill", "fuchsia")
+                            .style("text-shadow", "1px 1px 2px rgba(0, 0, 0, 0.5)");
+                    }
+
+                } else {
+                    // Append the song name
+                    textElement
+                        .append("tspan")
+                        .attr("x", width / 2)
+                        .text(trackName)
+                        .style("font-weight", "bold")
+                        .style("fill", "fuchsia")
+                        .style("text-shadow", "1px 1px 2px rgba(0, 0, 0, 0.5)");
+                }
+                
+                // Append "has appeared on the Spotify Top 50 Playlist only once."
+                textElement
+                    .append("tspan")
+                    .attr("x", width / 2)
+                    .attr("dy", "1.2em") // Adjust the line spacing for subsequent lines
+                    .text(`has appeared on the ${playlistText} only ${onceText}.`)
+                    .style("font-weight", "bold");
+
+                // Append "Date: <formattedDate>"
+                textElement
+                    .append("tspan")
+                    .attr("x", width / 2)
+                    .attr("dy", "2.4em") // Adjust the line spacing for subsequent lines
+                    .text(`Date: ${formattedDate}`)
+                    .style("font-weight", "bold");
+
+                // Append "Position:" or "Track Popularity:" based on selectedYAxis
+                textElement
+                    .append("tspan")
+                    .attr("x", width / 2)
+                    .attr("dy", "3.6em") // Adjust the line spacing for subsequent lines
+                    .style("font-weight", "bold")
+                    .text(selectedYAxis === "position" ? positionText : popularityText)
+                    .style("fill", selectedYAxis === "position" ? "steelblue" : "red");
+
+                // Append the position or track popularity value
+                textElement
+                    .append("tspan")
+                    .attr("x", width / 2)
+                    .attr("dx", (selectedYAxis === "position") ? "2.4em" : "4.3em") // Adjust the line spacing for subsequent lines
+                    .text(selectedYAxis === "position" ? filteredData[0].position_in_playlist : filteredData[0].track_popularity)
+                    .style("font-weight", "bold")
+                    .style("fill", "limegreen")
+                    .style("text-shadow", "1px 1px 2px rgba(0, 0, 0, 0.5)");
+                return;
+            }
 
             const xScale = d3.scaleTime()
                     .domain([minDate, maxDate])
@@ -266,7 +368,7 @@ d3.csv("playlist.csv").then(data => {
                 .attr("x", width / 2 + margin.left) // Center the title under the x-axis
                 .attr("y", height + margin.top + 35) // Position the title below the x-axis
                 .style("text-anchor", "middle") // Align the text to the center
-                .text("Dates");
+                .text("Date added to playlist - Date removed from playlist");
 
             // Add the y-axis title
             svg.append("text")
