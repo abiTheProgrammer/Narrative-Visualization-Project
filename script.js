@@ -353,6 +353,8 @@ d3.csv("playlist.csv").then(data => {
             // Remove any existing line path before adding the new one
             svg.select(".line-path").remove();
 
+            const tooltip = d3.select(".tooltip.line-chart-tooltip");
+
             // Add the line path to the chart
             svg.append("path")
                 .datum(filteredData)
@@ -360,7 +362,30 @@ d3.csv("playlist.csv").then(data => {
                 .attr("d", line)
                 .attr("fill", "none")
                 .attr("stroke", (selectedYAxis === "position") ? "steelblue" : "red")
-                .attr("stroke-width", 2);
+                .attr("stroke-width", 2)
+                .on("mouseover", function (event, d) {
+                    const [x, y] = d3.pointer(event);
+
+                    // Get the corresponding date and y-axis metric for the hovered point
+                    const date = xScale.invert(x - margin.left);
+                    const yMetric = Math.round(yScale.invert(y - margin.top));
+              
+                    // Update the tooltip content and position
+                    tooltip.style("display", "block")
+                      .html(`Date: ${date.toLocaleDateString(undefined, options)}<br>${(selectedYAxis === "position") ? "Position" : "Track Popularity"}: ${yMetric}`)
+                      .style("left", event.pageX + "px")
+                      .style("top", event.pageY - 40 + "px")
+                      .style("opacity", 1); // Set opacity to 1 to show the tooltip with fade-in animation
+                  })
+                .on("mouseout", function () {
+                    // ... (your existing code)
+            
+                    // Hide the tooltip on mouseout with fade-out animation
+                    tooltip.style("opacity", 0)
+                    .transition()
+                    .delay(200) // Add a small delay before hiding the tooltip to allow the fade-out animation to complete
+                    .style("display", "none");
+                });
             
             // Add the x-axis title
             svg.append("text")

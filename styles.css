@@ -124,3 +124,17 @@
       border: 1px solid black; /* Add a 1px solid black border to the SVG container */
       transform: translateY(-400px);
     }
+
+/* Tooltip */
+.line-chart-tooltip {
+  position: absolute;
+  display: none;
+  padding: 8px;
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  pointer-events: none; /* Prevent the tooltip from interfering with mouse events */
+  transition: opacity 0.2s ease-in-out; /* Add fade-in animation */
+}
