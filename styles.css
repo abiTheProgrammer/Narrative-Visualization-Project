@@ -82,7 +82,7 @@
     align-items: flex-start; /* Align items to the left */
     margin-top: 20px; /* Add some space between the chart and the dropdowns */
     width: 1380px; /* Adjust the width as needed */
-    height: 525px;
+    height: 500px;
     border: 1px solid #ddd; /* Add a border for the chart container */
     padding: 20px; /* Add some padding to the chart container */
     border-radius: 5px; /* Add rounded corners to the chart container */

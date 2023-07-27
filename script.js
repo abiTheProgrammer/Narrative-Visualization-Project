@@ -97,7 +97,7 @@ d3.csv("playlist.csv").then(data => {
 
        // Append a paragraph to the selected div and set text and CSS class
        div.append("p")
-       .html("Highlighting the top-streamed songs based on their <b>Average Track Popularity Score.</b>")
+       .html("Highlighting the top-streamed songs based on their <b>Average Track Popularity Score.</b> Hover over cells for more information.")
        .attr("class", "paragraph");
 
        d3.select(".scene3-container").style("display", "none");
@@ -163,7 +163,11 @@ d3.csv("playlist.csv").then(data => {
 
         // Append a paragraph to the selected div and set text and CSS class
         div.append("p")
-        .html("Visualizing song trends over time based on their <b>Track Popularity and Playlist Positions.</b> Hover over different points on the line for more information.")
+        .html("Visualizing song trends over time based on their <b>Track Popularity and Playlist Positions.</b>")
+        .attr("class", "paragraph");
+
+        div.append("p")
+        .html("Select different songs and either their popularity or positions to see their trends. Hover over different points on the line to see precise data.")
         .attr("class", "paragraph");
 
         d3.select(".scene3-container").style("display", "block");
@@ -313,11 +317,10 @@ d3.csv("playlist.csv").then(data => {
             // Create the x-axis with the customized tick format
             const xAxis = d3.axisBottom(xScale)
                 .tickValues([minDate, maxDate]) // Use only the start and end date as tick values
-                .tickFormat(d3.timeFormat("%b %Y"));
+                .tickFormat(d3.timeFormat("%b %d, %Y"));
 
             let yScale, yAxis;
             if (selectedYAxis === "position") {
-                const highest_pos = d3.min(filteredData, d => d.position_in_playlist);
                 yScale = d3.scaleLinear()
                     .domain([50, 1])
                     .range([height, 0]);
@@ -325,7 +328,6 @@ d3.csv("playlist.csv").then(data => {
                 yAxis = d3.axisLeft(yScale)
                     .tickValues(d3.range(50, 0, -5).concat(1));
             } else {
-                const highest_pop = d3.max(filteredData, d => d.track_popularity);
                 yScale = d3.scaleLinear()
                     .domain([0, 100])
                     .range([height, 0]);
