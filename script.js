@@ -98,9 +98,6 @@ d3.csv("playlist.csv").then(data => {
             .style("padding", "8px")
             .style("border-radius", "4px");
 
-
-        
-
         const lineGroup = svg.append("g")
             .attr("class", "line-group")
             .style("visibility", "hidden");
@@ -113,20 +110,20 @@ d3.csv("playlist.csv").then(data => {
 
         lineText.append("line")
             .attr("class", "line")
-            .style("stroke", "black")
+            .style("stroke", "red")
             .style("stroke-width", 2)
-            .attr("x1", 300)
-            .attr("y1", 90)
-            .attr("x2", 600)
-            .attr("y2", 270);
+            .attr("x1", 370)
+            .attr("y1", 140)
+            .attr("x2", 700)
+            .attr("y2", 300);
         lineText.append("text")
             .attr("class", "labeltext")
             .style("font-size", "16px")
             .style("fill", "black")
             .attr("text-anchor", "end")
             .attr("alignment-baseline", "middle")
-            .attr("x", 800)
-            .attr("y", 100)
+            .attr("x", 890)
+            .attr("y", 160)
             .html(`The slope downward shows that the songs on the left have been trending`)
             
         lineText.append("text")
@@ -135,9 +132,38 @@ d3.csv("playlist.csv").then(data => {
             .style("fill", "black")
             .attr("text-anchor", "end")
             .attr("alignment-baseline", "middle")
-            .attr("x", 720)
-            .attr("y", 115)
+            .attr("x", 830)
+            .attr("y", 175)
             .html(`for longer periods of time than the ones on the right.`);
+
+        lineText.append("line")
+            .attr("class", "line")
+            .style("stroke", "red")
+            .style("stroke-width", 2)
+            .attr("x1", 125)
+            .attr("y1", 95)
+            .attr("x2", 213)
+            .attr("y2", 95);
+        lineText.append("text")
+            .attr("class", "labeltext")
+            .style("font-size", "16px")
+            .style("font-weight", "bold")
+            .style("fill", "black")
+            .attr("text-anchor", "end")
+            .attr("alignment-baseline", "middle")
+            .attr("x", 850)
+            .attr("y", 68)
+            .html(`Flowers, Ella Baila Sola, Kill Bill, TQG, La Bebe, Cupid, As It Was, Calm Down, and I Wanna Be Yours`);
+            
+        lineText.append("text")
+            .attr("class", "labeltext")
+            .style("font-size", "16px")
+            .style("fill", "black")
+            .attr("text-anchor", "end")
+            .attr("alignment-baseline", "middle")
+            .attr("x", 500)
+            .attr("y", 85)
+            .html(`have appeared <tspan font-weight="bold" dy = "4">113</tspan> <tspan>times, the most on the playlist.</tspan>`);
 
         const label = lineGroup.append("text")
             .attr("class", "label")
@@ -321,20 +347,20 @@ d3.csv("playlist.csv").then(data => {
 
         lineText.append("line")
             .attr("class", "line")
-            .style("stroke", "black")
+            .style("stroke", "steelblue")
             .style("stroke-width", 2)
-            .attr("x1", 300)
-            .attr("y1", 120)
-            .attr("x2", 600)
-            .attr("y2", 190);
+            .attr("x1", 350)
+            .attr("y1", 130)
+            .attr("x2", 800)
+            .attr("y2", 230);
         lineText.append("text")
             .attr("class", "labeltext")
             .style("font-size", "16px")
             .style("fill", "black")
             .attr("text-anchor", "end")
             .attr("alignment-baseline", "middle")
-            .attr("x", 795)
-            .attr("y", 100)
+            .attr("x", 900)
+            .attr("y", 120)
             .html(`The slope downward shows that the songs on the left have been listened to more`)
             
         lineText.append("text")
@@ -343,9 +369,38 @@ d3.csv("playlist.csv").then(data => {
             .style("fill", "black")
             .attr("text-anchor", "end")
             .attr("alignment-baseline", "middle")
-            .attr("x", 820)
-            .attr("y", 115)
+            .attr("x", 900)
+            .attr("y", 135)
             .html(`frequently and hence have higher track popularity than the ones on the right.`);
+
+        lineText.append("line")
+            .attr("class", "line")
+            .style("stroke", "steelblue")
+            .style("stroke-width", 2)
+            .attr("x1", 125)
+            .attr("y1", 110)
+            .attr("x2", 230)
+            .attr("y2", 120);
+        lineText.append("text")
+            .attr("class", "labeltext")
+            .style("font-size", "16px")
+            .style("font-weight", "bold")
+            .style("fill", "black")
+            .attr("text-anchor", "end")
+            .attr("alignment-baseline", "middle")
+            .attr("x", 600)
+            .attr("y", 80)
+            .html(`un x100to, La Bebe, TQG, Creepin, BESO, Kill Bill, <tspan font-weight="normal" dy = 4> and other songs </tspan>`)
+            
+        lineText.append("text")
+            .attr("class", "labeltext")
+            .style("font-size", "16px")
+            .style("fill", "black")
+            .attr("text-anchor", "end")
+            .attr("alignment-baseline", "middle")
+            .attr("x", 430)
+            .attr("y", 95)
+            .html(`have the highest track popularity above <tspan font-weight="bold" dy = 4> 90. </tspan>`);
 
         const label = lineGroup.append("text")
             .attr("class", "label")
@@ -452,10 +507,18 @@ d3.csv("playlist.csv").then(data => {
         .html("Select different songs and a visualization to see its chart. Hover over different points on the line to see precise data.")
         .attr("class", "paragraph");
 
+        div.append("p")
+        .style("margin-left", "20px")
+        .style("margin-right", "20px")
+        .html(`Check out songs like <b>TQG, Creepin, Starboy, Flowers</b>, and many more.
+            These songs have blue charts with a lot of variance and red charts with less variance and scores in the 90s pretty consistently. This indicates that these songs have consistently been popular among listeners and have been trending on Spotify.
+            Interestingly, songs like <b>Search & Rescue, Attention, Hits Different, and BABY HELLO</b> have blue charts with fewer variance and red charts with more variance, indicating lesser average popularity among listeners at times and are not as trending as other songs. Why is this?`)
+        .attr("class", "paragraph");
+
         d3.select(".scene3-container").style("display", "block");
 
         // Get the unique song names from the data array
-        const uniqueSongs = Array.from(new Set(data.map(d => d.track_name)));
+        const uniqueSongs = Array.from(new Set(data.map(d => d.track_name))).sort((a,b) => a.localeCompare(b));
 
         // Select the song dropdown
         const songDropdown = d3.select("#song-dropdown");
@@ -480,7 +543,13 @@ d3.csv("playlist.csv").then(data => {
             
             // Sort data based on the track_add_date in ascending order
             filteredData.sort((a, b) => new Date(a.track_add_date) - new Date(b.track_add_date));
-            
+
+            // Calculate the average popularity
+            const averagePopularity = parseInt(d3.mean(filteredData, d => d.track_popularity));
+
+            // Calculate the count (number of appearances on the playlist)
+            const count = filteredData.length;
+
             // Get the minimum and maximum dates for the x-axis domain
             const minDate = new Date(filteredData[0].track_add_date);
             const maxDate = new Date(filteredData[filteredData.length - 1].track_add_date);
@@ -492,6 +561,45 @@ d3.csv("playlist.csv").then(data => {
             svg.selectAll(".x-axis-title").remove();
             svg.selectAll(".y-axis-title").remove();
             svg.selectAll(".no-data-text").remove();
+
+            const infoContainer = d3.select("#info-container");
+            infoContainer.selectAll("text").remove();
+
+            // Append text elements to the info-container
+            infoContainer.append("text")
+                .attr("x", 90)
+                .attr("y", 50)
+                .attr("font-size", 20)
+                .attr("fill", "black")
+                .attr("style", "font-weight: bold;")
+                .text(`Times Appeared on Playlist: `);
+
+            infoContainer.append("text")
+                .attr("x", 335)
+                .attr("y", 50)
+                .attr("font-size", 20)
+                .attr("fill", "steelblue")
+                .attr("style", "font-weight: bold;")
+                .text(`${count}`);
+            
+
+            infoContainer.append("text")
+                .attr("x", 90)
+                .attr("y", 80)
+                .attr("font-size", 20)
+                .attr("fill", "black")
+                .attr("style", "font-weight: bold;")
+                .text(`Average Track Popularity: `);
+
+            infoContainer.append("text")
+                .attr("x", 320)
+                .attr("y", 80)
+                .attr("font-size", 20)
+                .attr("fill", "red")
+                .attr("style", "font-weight: bold;")
+                .text(`${averagePopularity}`);
+            
+            
                    
 
             const margin = { top: 50, right: 50, bottom: 50, left: 50 };
@@ -723,7 +831,20 @@ d3.csv("playlist.csv").then(data => {
         .html("There is a <b>positive correlation</b> between a song's <u>Average Track Popularity</u> and the number of <u>Times Appeared</u> on the <b>Spotify Top 50 Playlist.</b>")
         .attr("class", "paragraph");
 
+        div.append("p")
+        .html("Hover over circles for more information.")
+        .attr("class", "paragraph");
+
         d3.select(".scene3-container").style("display", "none");
+
+        const tooltip = div.append("div")
+            .attr("class", "tooltip")
+            .style("position", "absolute")
+            .style("visibility", "hidden")
+            .style("background-color", "rgba(0, 0, 0, 0.8)")
+            .style("color", "#fff")
+            .style("padding", "8px")
+            .style("border-radius", "4px");
 
         const groupedData = Array.from(d3.group(data, d => d.track_name), ([track_name, entries]) => {
             const sumTrackPopularity = d3.sum(entries, d => d.track_popularity);
@@ -745,11 +866,24 @@ d3.csv("playlist.csv").then(data => {
             "Starboy",
             "TQG",
             "Creepin' (with The Weeknd & 21 Savage)",
-            "La Bebe - Remix",
+            "Flowers",
             "Attention",
             "BABY HELLO",
             "Hits Different",
-            "Search & Rescue"
+            "Search & Rescue",
+            "Kill Bill",
+            "La Bebe - Remix",
+            "Mean (Taylor's Version)",
+            "Frágil",
+            "Yandel 150",
+            "La Bachata",
+            "Overdrive",
+            "LUNA",
+            "Flooded The Face",
+            "Blank Space",
+            "Eyes Closed",
+            "Last Night"
+
           ];
           
           const sortedData = groupedData.filter((song) => {
@@ -758,42 +892,106 @@ d3.csv("playlist.csv").then(data => {
 
           sortedData.sort((a, b) => b.average_popularity - a.average_popularity);
 
-        // Append a table to the selected div and create table rows and cells
-        const table = div.append("table");
+        // Define the SVG container dimensions and margins
+        const svgWidth = 800;
+        const svgHeight = 600;
+        const margin = { top: 80, right: 50, bottom: 150, left: 120 };
+        const width = svgWidth - margin.left - margin.right;
+        const height = svgHeight - margin.top - margin.bottom;
 
-        // Create table header row
-        const headerRow = table.append("tr");
-        headerRow.append("th").text("Songs");
-        headerRow.append("th").text("Average Track Popularity");
-        headerRow.append("th").text("Times Appeared on Playlist");
+        // Create the SVG container
+        const svg = div.append("svg")
+            .attr("width", svgWidth)
+            .attr("height", svgHeight);
 
-        // Create table rows for each top song
-        const rows = table.selectAll("tr")
-        .data(sortedData)
-        .enter()
-        .append("tr");
+        // Create the x and y scales
+        const xScale = d3.scaleLinear()
+            .domain([0, d3.max(sortedData, d => d.count)])
+            .range([margin.left, width + margin.left]);
 
-        // Add cells for track name, average track popularity, and tooltip
-        rows.append("td")
-            .text(d => d.track_name)
-            .attr("data-tooltip", d => 
-                `Duration: ${Math.floor(parseInt(d.duration) / 60000)} mins, ${((parseInt(d.duration) % 60000) / 1000).toFixed(0)} secs
-                Artists: ${d.artists.replace(/[\[\]']/g, "").replace(/,/g, ", ")}
-                Album: ${d.album}
-                Album Release Date: ${new Date(d.album_release_date).toLocaleDateString(undefined, options)}
-                No. of tracks in album: ${d.tracks}
-                Highest position on playlist: ${d.position}
-                `
-            );
-        rows.append("td")
-            .text(d => d.average_popularity);
-        rows.append("td")
-            .text(d => d.count);
+        const yScale = d3.scaleLinear()
+            .domain([50, 100])
+            .range([height + margin.top, margin.top]);
 
-        // Append a paragraph to the selected div and set text and CSS class
-        div.append("p")
-        .html("Hover over song names for more information.")
-        .attr("class", "paragraph");
+        // Append the x and y axes
+        const xAxis = d3.axisBottom(xScale);
+        const yAxis = d3.axisLeft(yScale);
+
+        svg.append("g")
+            .attr("class", "x-axis")
+            .attr("transform", `translate(0, ${height + margin.top})`)
+            .call(xAxis);
+
+        svg.append("g")
+            .attr("class", "y-axis")
+            .attr("transform", `translate(${margin.left}, 0)`)
+            .call(yAxis);
+
+        svg.selectAll(".circle")
+            .data(sortedData)
+            .enter()
+            .append("circle")
+            .attr("class", "circle")
+            .attr("cx", d => xScale(d.count))
+            .attr("cy", d => yScale(d.average_popularity))
+            .attr("r", 6)
+            .attr("fill", "steelblue")
+            .attr("opacity", 0.7)
+            .on("mouseover", function (event, d) {
+                d3.select(this)
+                .transition()
+                .duration(200)
+                .attr("fill", "orange");
+                tooltip.style("visibility", "visible")
+                    .html(`<b>Song: ${d.track_name}</b><br>
+                        <b>Average Track Popularity: ${d.average_popularity}</b><br>
+                        <b>Times Appeared on Playlist: ${d.count}</b><br>
+                        Duration: ${Math.floor(parseInt(d.duration) / 60000)} mins, ${((parseInt(d.duration) % 60000) / 1000).toFixed(0)} secs<br>
+                        Artists: ${d.artists.replace(/[\[\]']/g, "").replace(/,/g, ", ")}<br>
+                        Album: ${d.album}<br>
+                        Album Release Date: ${new Date(d.album_release_date).toLocaleDateString(undefined, options)}<br>
+                        No. of tracks in album: ${d.tracks}<br>
+                        Highest position on playlist: ${d.position}
+                        `
+                    )
+                    .style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 10) + "px");
+            })
+            .on("mouseout", function () {
+                d3.select(this)
+                  .transition()
+                  .duration(200)
+                  .attr("fill", "steelblue");
+                tooltip.style("visibility", "hidden");
+            })
+
+        // Add the x-axis title
+        svg.append("text")
+            .attr("class", "x-axis-title")
+            .attr("x", width / 2 + margin.left)
+            .attr("y", height + margin.top + 40)
+            .style("text-anchor", "middle")
+            .text("Times Appeared on Playlist")
+            .style("font-weight", "bold");
+
+        // Add the y-axis title
+        svg.append("text")
+            .attr("class", "y-axis-title")
+            .attr("x", -height / 2 - margin.top)
+            .attr("y", margin.left - 40)
+            .attr("transform", "rotate(-90)")
+            .style("text-anchor", "middle")
+            .text("Average Track Popularity")
+            .style("font-weight", "bold");
+        svg.append("line")
+            .attr("class", "line")
+            .style("stroke", "black")
+            .style("stroke-width", 2)
+            .attr("x1", 120)
+            .attr("y1", 370)
+            .attr("x2", 120 + width)
+            .attr("y2", 95);
+
     }
 
     // Initialize the narrative visualization with the first scene

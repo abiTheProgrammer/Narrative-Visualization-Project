@@ -6,52 +6,6 @@
     justify-content: center;
   }
 
-  /* CSS styling for the table */
-  table {
-    border-collapse: collapse;
-    width: 80%;
-    margin-top: 20px;
-  }
-  
-  th, td {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
-  }
-  
-  th {
-    background-color: #f2f2f2;
-  }
-
-  /* CSS styling for the tooltip */
-  td[data-tooltip] {
-    position: relative;
-  }
-
-  td[data-tooltip]::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    top: -40px; /* Adjust this value to control the tooltip's position */
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #333;
-    color: #fff;
-    padding: 10px;
-    border-radius: 4px;
-    font-size: 14px;
-    white-space: pre-line;
-    pointer-events: none; /* This ensures the tooltip doesn't interfere with mouse events */
-    opacity: 0; /* Initially hide the tooltip */
-    z-index: 1; /* Make sure the tooltip is above other elements */
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
-    background-image: linear-gradient(45deg, #333 0%, #444 100%); /* Gradient background */
-    transition: opacity 0.2s ease-in-out; /* Add a smooth fade-in/fade-out effect */
-  }
-
-  td[data-tooltip]:hover::after {
-    opacity: 1; /* Show the tooltip on hover */
-  }
-
   .navigation {
       margin-top: 0px;
     }
@@ -88,6 +42,7 @@
     border-radius: 5px; /* Add rounded corners to the chart container */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
     overflow: hidden;
+    position: relative;
   }
 
     /* Styling for the dropdown containers */
@@ -123,6 +78,12 @@
     #text-container {
       border: 1px solid black; /* Add a 1px solid black border to the SVG container */
       transform: translateY(-400px);
+    }
+
+    #info-container {
+      position: absolute;
+      top: 325px;
+      left: 150px;
     }
 
 /* Tooltip */
