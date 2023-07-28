@@ -10,7 +10,7 @@ d3.csv("playlist.csv").then(data => {
     const updateButtonVisibility = (sceneIndex) => {
         if (sceneIndex === 0) {
             prevBtn.style("display", "none");
-        } else if (sceneIndex === 2) {
+        } else if (sceneIndex === 3) {
             nextBtn.style("display", "none");
         } else {
             prevBtn.style("display", "block");
@@ -33,7 +33,7 @@ d3.csv("playlist.csv").then(data => {
 
         // Append a paragraph to the selected div and set text and CSS class
         div.append("p")
-        .html("Overview of songs that have appeared most frequently on the <b>Spotify Top 50 Playlist (March 2023 - July 2023).</b> Hover over cells for more information.")
+        .html("Overview of songs that have appeared most frequently on the <b>Spotify Top 50 Playlist (March 2023 - July 2023).</b> Hover over bars for more information.")
         .attr("class", "paragraph");
 
         d3.select(".scene3-container").style("display", "none");
@@ -54,38 +54,178 @@ d3.csv("playlist.csv").then(data => {
         }));
 
         // Sort the grouped data based on the count of position_in_playlist in descending order
-        const topSongs = groupedData.sort((a, b) => b.count - a.count);
+        const topSongs = groupedData.sort((a, b) => b.count - a.count).slice(0, 70);
 
-        // Append a table to the selected div and create table rows and cells
-        const table = div.append("table");
+        // Create a bar chart for Times Appeared on Playlist
+        const svg = div.append("svg")
+            .attr("width", 900) // Increase the width to make it more visually appealing
+            .attr("height", 600); // Increase the height to make it more visually appealing
 
-        // Create table header row
-        const headerRow = table.append("tr");
-        headerRow.append("th").text("Songs");
-        headerRow.append("th").text("Times Appeared");
+        const margin = { top: 80, right: 50, bottom: 150, left: 120 }; // Increase the margins for better spacing
+        const width = 900 - margin.left - margin.right;
+        const height = 600 - margin.top - margin.bottom;
 
-        // Create table rows for each top song
-        const rows = table.selectAll("tr")
-        .data(topSongs)
-        .enter()
-        .append("tr");
+        const xScale = d3.scaleBand()
+          .domain(topSongs.map(d => d.track_name))
+          .range([0, width])
+          .padding(0.2);
 
-        // Add cells for track name, number of times appeared, and tooltip
-        rows.append("td")
-            .text(d => d.track_name)
-            .attr("data-tooltip", d => 
-                `Duration: ${Math.floor(parseInt(d.duration) / 60000)} mins, ${((parseInt(d.duration) % 60000) / 1000).toFixed(0)} secs
-                Artists: ${d.artists.replace(/[\[\]']/g, "").replace(/,/g, ", ")}
-                Album: ${d.album}
-                Album Release Date: ${new Date(d.album_release_date).toLocaleDateString(undefined, options)}
-                No. of tracks in album: ${d.tracks}
-                `
-            );
-        rows.append("td")
-            .text(d => d.count)
-            .attr("data-tooltip", d => 
-                `Highest position on playlist: ${d.position}`
-            );
+        const yScale = d3.scaleLinear()
+          .domain([0, 120])
+          .range([height, 0]);
+
+        const xAxis = d3.axisBottom(xScale).tickSizeOuter(0);
+        const yAxis = d3.axisLeft(yScale);
+
+        svg.append("g")
+          .attr("class", "x-axis")
+          .attr("transform", `translate(${margin.left}, ${height + margin.top})`)
+          .call(xAxis);
+        svg.selectAll(".x-axis .tick line").style("display", "none");
+        svg.selectAll(".x-axis .tick text").style("display", "none");
+
+        svg.append("g")
+          .attr("class", "y-axis")
+          .attr("transform", `translate(${margin.left}, ${margin.top})`)
+          .call(yAxis);
+
+        const tooltip = div.append("div")
+            .attr("class", "tooltip")
+            .style("position", "absolute")
+            .style("visibility", "hidden")
+            .style("background-color", "rgba(0, 0, 0, 0.8)")
+            .style("color", "#fff")
+            .style("padding", "8px")
+            .style("border-radius", "4px");
+
+
+        
+
+        const lineGroup = svg.append("g")
+            .attr("class", "line-group")
+            .style("visibility", "hidden");
+        const line = lineGroup.append("line")
+            .attr("class", "line")
+            .style("stroke", "black")
+            .style("stroke-width", 2);
+        const lineText = svg.append("g")
+            .attr("class", "line-group");
+
+        lineText.append("line")
+            .attr("class", "line")
+            .style("stroke", "black")
+            .style("stroke-width", 2)
+            .attr("x1", 300)
+            .attr("y1", 90)
+            .attr("x2", 600)
+            .attr("y2", 270);
+        lineText.append("text")
+            .attr("class", "labeltext")
+            .style("font-size", "16px")
+            .style("fill", "black")
+            .attr("text-anchor", "end")
+            .attr("alignment-baseline", "middle")
+            .attr("x", 800)
+            .attr("y", 100)
+            .html(`The slope downward shows that the songs on the left have been trending`)
+            
+        lineText.append("text")
+            .attr("class", "labeltext")
+            .style("font-size", "16px")
+            .style("fill", "black")
+            .attr("text-anchor", "end")
+            .attr("alignment-baseline", "middle")
+            .attr("x", 720)
+            .attr("y", 115)
+            .html(`for longer periods of time than the ones on the right.`);
+
+        const label = lineGroup.append("text")
+            .attr("class", "label")
+            .style("font-size", "12px")
+            .style("fill", "black")
+            .attr("text-anchor", "end")
+            .attr("alignment-baseline", "middle");
+        // Create bars
+        svg.selectAll(".bar")
+          .data(topSongs)
+          .enter()
+          .append("rect")
+          .attr("class", "bar")
+          .attr("x", d => xScale(d.track_name) + margin.left)
+          .attr("y", d => yScale(d.count) + margin.top)
+          .attr("width", xScale.bandwidth())
+          .attr("height", 0) // Set initial height to zero for smooth transitions
+          .attr("fill", "steelblue")
+          .attr("opacity", 0.9)
+          .on("mouseover", function (event, d) {
+                d3.select(this)
+                .transition()
+                .duration(200)
+                .attr("fill", "orange");
+                // Show the line and label
+                lineGroup.style("visibility", "visible");
+
+                // Calculate the position and value for the line and label
+                const x1 = xScale(d.track_name) + margin.left + xScale.bandwidth() / 2;
+                const x2 = margin.left;
+                const y = yScale(d.count) + margin.top;
+                // const y2 = height + margin.top;
+
+                // Update the line attributes
+                line.attr("x1", x1)
+                    .attr("y1", y)
+                    .attr("x2", x2)
+                    .attr("y2", y);
+
+                // Update the label text and position
+                label.text(d.count)
+                    .attr("x", x2 - 5)
+                    .attr("y", y);
+                tooltip.style("visibility", "visible")
+                    .html(`<b>Song: ${d.track_name}</b><br>
+                        <b>Times Appeared on Playlist: ${d.count}</b><br>
+                        Duration: ${Math.floor(parseInt(d.duration) / 60000)} mins, ${((parseInt(d.duration) % 60000) / 1000).toFixed(0)} secs<br>
+                        Artists: ${d.artists.replace(/[\[\]']/g, "").replace(/,/g, ", ")}<br>
+                        Album: ${d.album}<br>
+                        Album Release Date: ${new Date(d.album_release_date).toLocaleDateString(undefined, options)}<br>
+                        No. of tracks in album: ${d.tracks}<br>
+                        Highest position on playlist: ${d.position}
+                        `
+                    )
+                    .style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 10) + "px");
+          })
+          .on("mouseout", function (event, d) {
+            d3.select(this)
+            .transition()
+            .duration(200)
+            .attr("fill", "steelblue");
+            tooltip.style("visibility", "hidden")
+            lineGroup.style("visibility", "hidden");
+          })
+          .transition()
+          .duration(1000)
+          .attr("height", d => height - yScale(d.count)); // Set the final height of the bars
+
+
+        // Add the x-axis title
+        svg.append("text")
+            .attr("class", "x-axis-title")
+            .attr("x", width / 2 + margin.left) // Center the title under the x-axis
+            .attr("y", height + margin.top + 30) // Position the title below the x-axis
+            .style("text-anchor", "middle") // Align the text to the center
+            .text("Songs")
+            .style("font-weight", "bold");
+
+        // Add the y-axis title
+        svg.append("text")
+            .attr("class", "y-axis-title")
+            .attr("x", -height / 2 - margin.top) // Position the title to the left of the y-axis
+            .attr("y", margin.left - 40) // Adjust the y-coordinate to control the distance from the y-axis
+            .attr("transform", "rotate(-90)") // Rotate the text to display it vertically
+            .style("text-anchor", "middle") // Align the text to the center
+            .text("Times Appeared on Playlist")
+            .style("font-weight", "bold");
     };
 
     const createScene2 = () => {
@@ -97,7 +237,7 @@ d3.csv("playlist.csv").then(data => {
 
        // Append a paragraph to the selected div and set text and CSS class
        div.append("p")
-       .html("Highlighting the top-streamed songs based on their <b>Average Track Popularity Score.</b> Hover over cells for more information.")
+       .html("Highlighting the top-streamed songs based on their <b>Average Track Popularity Score.</b> Hover over bars for more information.")
        .attr("class", "paragraph");
 
        d3.select(".scene3-container").style("display", "none");
@@ -119,39 +259,181 @@ d3.csv("playlist.csv").then(data => {
         });
         
         // Sort the grouped data in descending order based on average_popularity >= 1
-        const sortedData = groupedData.sort((a, b) => b.average_popularity - a.average_popularity)
+        const selectedData = groupedData.sort((a, b) => b.average_popularity - a.average_popularity)
         .filter(d => d.average_popularity >= 1);
 
-        // Append a table to the selected div and create table rows and cells
-        const table = div.append("table");
+        const sortedData = [
+            ...selectedData.slice(0, 11),
+            ...selectedData.slice(66, 70),
+            ...selectedData.slice(100, 160)
+        ];
 
-        // Create table header row
-        const headerRow = table.append("tr");
-        headerRow.append("th").text("Songs");
-        headerRow.append("th").text("Average Track Popularity Score");
+        const svg = div.append("svg")
+            .attr("width", 900) // Increase the width to make it more visually appealing
+            .attr("height", 600); // Increase the height to make it more visually appealing
 
-        // Create table rows for each top song
-        const rows = table.selectAll("tr")
-        .data(sortedData)
-        .enter()
-        .append("tr");
+        const margin = { top: 80, right: 50, bottom: 150, left: 120 }; // Increase the margins for better spacing
+        const width = 900 - margin.left - margin.right;
+        const height = 600 - margin.top - margin.bottom;
 
-        // Add cells for track name, average track popularity, and tooltip
-        rows.append("td")
-            .text(d => d.track_name)
-            .attr("data-tooltip", d => 
-                `Duration: ${Math.floor(parseInt(d.duration) / 60000)} mins, ${((parseInt(d.duration) % 60000) / 1000).toFixed(0)} secs
-                Artists: ${d.artists.replace(/[\[\]']/g, "").replace(/,/g, ", ")}
-                Album: ${d.album}
-                Album Release Date: ${new Date(d.album_release_date).toLocaleDateString(undefined, options)}
-                No. of tracks in album: ${d.tracks}
-                `
-            );
-        rows.append("td")
-            .text(d => d.average_popularity)
-            .attr("data-tooltip", d => 
-                `Highest position on playlist: ${d.position}`
-            );
+        const xScale = d3.scaleBand()
+          .domain(sortedData.map(d => d.track_name))
+          .range([0, width])
+          .padding(0.2);
+
+        const yScale = d3.scaleLinear()
+          .domain([0, 110])
+          .range([height, 0]);
+
+        const xAxis = d3.axisBottom(xScale).tickSizeOuter(0);
+        const yAxis = d3.axisLeft(yScale);
+
+        svg.append("g")
+          .attr("class", "x-axis")
+          .attr("transform", `translate(${margin.left}, ${height + margin.top})`)
+          .call(xAxis);
+        svg.selectAll(".x-axis .tick line").style("display", "none");
+        svg.selectAll(".x-axis .tick text").style("display", "none");
+
+        svg.append("g")
+          .attr("class", "y-axis")
+          .attr("transform", `translate(${margin.left}, ${margin.top})`)
+          .call(yAxis);
+
+        const tooltip = div.append("div")
+            .attr("class", "tooltip")
+            .style("position", "absolute")
+            .style("visibility", "hidden")
+            .style("background-color", "rgba(0, 0, 0, 0.8)")
+            .style("color", "#fff")
+            .style("padding", "8px")
+            .style("border-radius", "4px");
+
+        const lineGroup = svg.append("g")
+            .attr("class", "line-group")
+            .style("visibility", "hidden");
+        const line = lineGroup.append("line")
+            .attr("class", "line")
+            .style("stroke", "black")
+            .style("stroke-width", 2);
+        const lineText = svg.append("g")
+            .attr("class", "line-group");
+
+        lineText.append("line")
+            .attr("class", "line")
+            .style("stroke", "black")
+            .style("stroke-width", 2)
+            .attr("x1", 300)
+            .attr("y1", 120)
+            .attr("x2", 600)
+            .attr("y2", 190);
+        lineText.append("text")
+            .attr("class", "labeltext")
+            .style("font-size", "16px")
+            .style("fill", "black")
+            .attr("text-anchor", "end")
+            .attr("alignment-baseline", "middle")
+            .attr("x", 795)
+            .attr("y", 100)
+            .html(`The slope downward shows that the songs on the left have been listened to more`)
+            
+        lineText.append("text")
+            .attr("class", "labeltext")
+            .style("font-size", "16px")
+            .style("fill", "black")
+            .attr("text-anchor", "end")
+            .attr("alignment-baseline", "middle")
+            .attr("x", 820)
+            .attr("y", 115)
+            .html(`frequently and hence have higher track popularity than the ones on the right.`);
+
+        const label = lineGroup.append("text")
+            .attr("class", "label")
+            .style("font-size", "12px")
+            .style("fill", "black")
+            .attr("text-anchor", "end")
+            .attr("alignment-baseline", "middle");
+        // Create bars
+        svg.selectAll(".bar")
+          .data(sortedData)
+          .enter()
+          .append("rect")
+          .attr("class", "bar")
+          .attr("x", d => xScale(d.track_name) + margin.left)
+          .attr("y", d => yScale(d.average_popularity) + margin.top)
+          .attr("width", xScale.bandwidth())
+          .attr("height", 0) // Set initial height to zero for smooth transitions
+          .attr("fill", "red")
+          .attr("opacity", 0.9)
+          .on("mouseover", function (event, d) {
+                d3.select(this)
+                .transition()
+                .duration(200)
+                .attr("fill", "orange");
+                // Show the line and label
+                lineGroup.style("visibility", "visible");
+
+                // Calculate the position and value for the line and label
+                const x1 = xScale(d.track_name) + margin.left + xScale.bandwidth() / 2;
+                const x2 = margin.left;
+                const y = yScale(d.average_popularity) + margin.top;
+                // const y2 = height + margin.top;
+
+                // Update the line attributes
+                line.attr("x1", x1)
+                    .attr("y1", y)
+                    .attr("x2", x2)
+                    .attr("y2", y);
+
+                // Update the label text and position
+                label.text(d.average_popularity)
+                    .attr("x", x2 - 5)
+                    .attr("y", y);
+                tooltip.style("visibility", "visible")
+                    .html(`<b>Song: ${d.track_name}</b><br>
+                        <b>Average Track Popularity: ${d.average_popularity}</b><br>
+                        Duration: ${Math.floor(parseInt(d.duration) / 60000)} mins, ${((parseInt(d.duration) % 60000) / 1000).toFixed(0)} secs<br>
+                        Artists: ${d.artists.replace(/[\[\]']/g, "").replace(/,/g, ", ")}<br>
+                        Album: ${d.album}<br>
+                        Album Release Date: ${new Date(d.album_release_date).toLocaleDateString(undefined, options)}<br>
+                        No. of tracks in album: ${d.tracks}<br>
+                        Highest position on playlist: ${d.position}
+                        `
+                    )
+                    .style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 10) + "px");
+          })
+          .on("mouseout", function (event, d) {
+            d3.select(this)
+            .transition()
+            .duration(200)
+            .attr("fill", "red");
+            tooltip.style("visibility", "hidden")
+            lineGroup.style("visibility", "hidden");
+          })
+          .transition()
+          .duration(1000)
+          .attr("height", d => height - yScale(d.average_popularity)); // Set the final height of the bars
+
+
+        // Add the x-axis title
+        svg.append("text")
+            .attr("class", "x-axis-title")
+            .attr("x", width / 2 + margin.left) // Center the title under the x-axis
+            .attr("y", height + margin.top + 30) // Position the title below the x-axis
+            .style("text-anchor", "middle") // Align the text to the center
+            .text("Songs")
+            .style("font-weight", "bold");
+
+        // Add the y-axis title
+        svg.append("text")
+            .attr("class", "y-axis-title")
+            .attr("x", -height / 2 - margin.top) // Position the title to the left of the y-axis
+            .attr("y", margin.left - 40) // Adjust the y-coordinate to control the distance from the y-axis
+            .attr("transform", "rotate(-90)") // Rotate the text to display it vertically
+            .style("text-anchor", "middle") // Align the text to the center
+            .text("Average Track Popularity")
+            .style("font-weight", "bold");
     };
     
     const createScene3 = () => {
@@ -380,7 +662,6 @@ d3.csv("playlist.csv").then(data => {
                       .style("opacity", 1); // Set opacity to 1 to show the tooltip with fade-in animation
                   })
                 .on("mouseout", function () {
-                    // ... (your existing code)
             
                     // Hide the tooltip on mouseout with fade-out animation
                     tooltip.style("opacity", 0)
@@ -430,7 +711,91 @@ d3.csv("playlist.csv").then(data => {
         d3.select("#y-axis-dropdown").property("value", "position");
               
     };
-    
+
+    const createScene4 = () => {
+        // Append an h1 heading to the selected div and set text and CSS class
+        div.append("h1")
+        .text("Conclusion")
+        .attr("class", "heading");
+
+        // Append a paragraph to the selected div and set text and CSS class
+        div.append("p")
+        .html("There is a <b>positive correlation</b> between a song's <u>Average Track Popularity</u> and the number of <u>Times Appeared</u> on the <b>Spotify Top 50 Playlist.</b>")
+        .attr("class", "paragraph");
+
+        d3.select(".scene3-container").style("display", "none");
+
+        const groupedData = Array.from(d3.group(data, d => d.track_name), ([track_name, entries]) => {
+            const sumTrackPopularity = d3.sum(entries, d => d.track_popularity);
+            const averageTrackPopularity = parseInt(sumTrackPopularity / entries.length);
+            return { 
+                track_name,
+                artists: entries[0].name_of_artists,
+                album: entries[0].album_name,
+                album_release_date: entries[0].album_release_date,
+                tracks: entries[0].number_of_tracks_in_album,
+                duration: entries[0].track_duration_ms,
+                position: entries[0].position_in_playlist,
+                average_popularity: averageTrackPopularity,
+                count: entries.length
+            };
+        });
+
+        const selectedTrackNames = [
+            "Starboy",
+            "TQG",
+            "Creepin' (with The Weeknd & 21 Savage)",
+            "La Bebe - Remix",
+            "Attention",
+            "BABY HELLO",
+            "Hits Different",
+            "Search & Rescue"
+          ];
+          
+          const sortedData = groupedData.filter((song) => {
+            return selectedTrackNames.includes(song.track_name);
+          });
+
+          sortedData.sort((a, b) => b.average_popularity - a.average_popularity);
+
+        // Append a table to the selected div and create table rows and cells
+        const table = div.append("table");
+
+        // Create table header row
+        const headerRow = table.append("tr");
+        headerRow.append("th").text("Songs");
+        headerRow.append("th").text("Average Track Popularity");
+        headerRow.append("th").text("Times Appeared on Playlist");
+
+        // Create table rows for each top song
+        const rows = table.selectAll("tr")
+        .data(sortedData)
+        .enter()
+        .append("tr");
+
+        // Add cells for track name, average track popularity, and tooltip
+        rows.append("td")
+            .text(d => d.track_name)
+            .attr("data-tooltip", d => 
+                `Duration: ${Math.floor(parseInt(d.duration) / 60000)} mins, ${((parseInt(d.duration) % 60000) / 1000).toFixed(0)} secs
+                Artists: ${d.artists.replace(/[\[\]']/g, "").replace(/,/g, ", ")}
+                Album: ${d.album}
+                Album Release Date: ${new Date(d.album_release_date).toLocaleDateString(undefined, options)}
+                No. of tracks in album: ${d.tracks}
+                Highest position on playlist: ${d.position}
+                `
+            );
+        rows.append("td")
+            .text(d => d.average_popularity);
+        rows.append("td")
+            .text(d => d.count);
+
+        // Append a paragraph to the selected div and set text and CSS class
+        div.append("p")
+        .html("Hover over song names for more information.")
+        .attr("class", "paragraph");
+    }
+
     // Initialize the narrative visualization with the first scene
     createScene1();
     updateButtonVisibility(sceneIndex);
@@ -446,7 +811,7 @@ d3.csv("playlist.csv").then(data => {
     });
 
     nextBtn.on("click", () => {
-        if (sceneIndex < 2) {
+        if (sceneIndex < 3) {
             sceneIndex++;
             updateButtonVisibility(sceneIndex);
             updateScene();
@@ -468,6 +833,8 @@ d3.csv("playlist.csv").then(data => {
         case 2:
           createScene3();
           break;
+        case 3:
+          createScene4();
         default:
           break;
       }
