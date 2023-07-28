@@ -163,11 +163,11 @@ d3.csv("playlist.csv").then(data => {
 
         // Append a paragraph to the selected div and set text and CSS class
         div.append("p")
-        .html("Visualizing song trends over time based on their <b>Track Popularity and Playlist Positions.</b>")
+        .html("Explore different trends of songs <b>over a period of time.</b>")
         .attr("class", "paragraph");
 
         div.append("p")
-        .html("Select different songs and either their popularity or positions to see their trends. Hover over different points on the line to see precise data.")
+        .html("Select different songs and a visualization to see its chart. Hover over different points on the line to see precise data.")
         .attr("class", "paragraph");
 
         d3.select(".scene3-container").style("display", "block");
@@ -201,7 +201,7 @@ d3.csv("playlist.csv").then(data => {
             
             // Get the minimum and maximum dates for the x-axis domain
             const minDate = new Date(filteredData[0].track_add_date);
-            const maxDate = new Date(filteredData[filteredData.length - 1].track_add_date); // Latest date of the selected song
+            const maxDate = new Date(filteredData[filteredData.length - 1].track_add_date);
 
             // Remove previous chart elements
             svg.selectAll(".x-axis").remove();
