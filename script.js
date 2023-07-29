@@ -110,7 +110,7 @@ d3.csv("playlist.csv").then(data => {
 
         lineText.append("line")
             .attr("class", "line")
-            .style("stroke", "red")
+            .style("stroke", "black")
             .style("stroke-width", 2)
             .attr("x1", 370)
             .attr("y1", 140)
@@ -138,7 +138,7 @@ d3.csv("playlist.csv").then(data => {
 
         lineText.append("line")
             .attr("class", "line")
-            .style("stroke", "red")
+            .style("stroke", "black")
             .style("stroke-width", 2)
             .attr("x1", 125)
             .attr("y1", 95)
@@ -347,7 +347,7 @@ d3.csv("playlist.csv").then(data => {
 
         lineText.append("line")
             .attr("class", "line")
-            .style("stroke", "steelblue")
+            .style("stroke", "black")
             .style("stroke-width", 2)
             .attr("x1", 350)
             .attr("y1", 130)
@@ -375,7 +375,7 @@ d3.csv("playlist.csv").then(data => {
 
         lineText.append("line")
             .attr("class", "line")
-            .style("stroke", "steelblue")
+            .style("stroke", "black")
             .style("stroke-width", 2)
             .attr("x1", 125)
             .attr("y1", 110)
@@ -495,7 +495,7 @@ d3.csv("playlist.csv").then(data => {
 
         // Append an h1 heading to the selected div and set text and CSS class
         div.append("h1")
-        .text("Song Trends")
+        .text("Exploring Song Trends")
         .attr("class", "heading");
 
         // Append a paragraph to the selected div and set text and CSS class
@@ -972,7 +972,8 @@ d3.csv("playlist.csv").then(data => {
             .attr("y", height + margin.top + 40)
             .style("text-anchor", "middle")
             .text("Times Appeared on Playlist")
-            .style("font-weight", "bold");
+            .style("font-weight", "bold")
+            .style("fill", "steelblue");
 
         // Add the y-axis title
         svg.append("text")
@@ -981,6 +982,7 @@ d3.csv("playlist.csv").then(data => {
             .attr("y", margin.left - 40)
             .attr("transform", "rotate(-90)")
             .style("text-anchor", "middle")
+            .style("fill", "red")
             .text("Average Track Popularity")
             .style("font-weight", "bold");
         svg.append("line")
